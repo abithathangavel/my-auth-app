@@ -1,28 +1,59 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  name: 'App'
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+/* Add any styles you need here */
 </style>
+
+  
+  
+  
+  
+  <!-- <template>
+    <div>
+      <div v-if="showSignUp">
+        <SignUpForm  @goToLogin="toggleForm" @toggleForm="toggleForm"  />
+      </div>
+      <div v-else>
+        <LoginForm @toggleForm="toggleForm" @loginSuccess="loginSuccess" />
+      </div>
+    </div>
+  </template>
+
+  <script>
+  import SignUpForm from './components/SignUpForm.vue';
+  import LoginForm from './components/LoginForm.vue';
+
+  export default {
+    data() {
+      return {
+        showSignUp: true
+      };
+    },
+    methods: {
+      toggleForm() {
+        this.showSignUp = !this.showSignUp;
+      },
+      
+      loginSuccess() {
+        if (this.$route.path !== '/home') {
+          this.$router.push('/home');
+        }
+      }
+
+          },
+          components: {
+            SignUpForm,
+            LoginForm
+          }
+        };
+  </script> -->

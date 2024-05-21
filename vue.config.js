@@ -1,4 +1,11 @@
-const { defineConfig } = require('@vue/cli-service')
-module.exports = defineConfig({
-  transpileDependencies: true
-})
+const webpack = require('webpack');
+
+module.exports = {
+  configureWebpack: {
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.env.GOOGLE_CLIENT_ID': JSON.stringify('529640845422-umlott9an2md5d71hd58thetta9e857e.apps.googleusercontent.com'),
+      }),
+    ],
+  },
+};
