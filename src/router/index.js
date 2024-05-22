@@ -6,8 +6,7 @@ import HomePage from '../components/HomePage.vue';
 
 Vue.use(Router);
 
-export default new Router({
-  mode: 'history',  // Use 'hash' if you prefer hash mode
+const router = new Router({
   routes: [
     {
       path: '*',
@@ -26,7 +25,23 @@ export default new Router({
     {
       path: '/home',
       name: 'HomePage',
-      component: HomePage
+      component: HomePage,
+      meta: { requiresAuth: true }
     }
   ]
 });
+
+router.beforeEach((to, from, next) => {
+  const loggedIn = localStorage.getItem('user');
+  if (to.matched.some(record => record.meta.requiresAuth) && !loggedIn) {
+    next('/login');
+  } 
+  //  else if (to.path === '/login' && loggedIn) {
+  //   next('/home');
+  //  }
+  else {
+    next();
+  }
+});
+
+export default router;

@@ -54,11 +54,12 @@ app.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(400).send({ message: 'Invalid credentials' });
     }
-    res.send({ message: 'Login successful' });
+    res.send({ message: 'Login successful', user: { name: user.name, email: user.email } });
   } catch (error) {
     res.status(500).send({ message: 'Server error' });
   }
 });
+
 
 app.post('/api/google-login', async (req, res) => {
   const { id_token } = req.body;
