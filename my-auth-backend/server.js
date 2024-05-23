@@ -4,7 +4,6 @@ const axios = require('axios');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
-const { OAuth2Client } = require('google-auth-library');
 const User = require('./models/User');
 require('dotenv').config();
 
@@ -27,15 +26,16 @@ mongoose.connect("mongodb://127.0.0.1/auth_demo", {
   console.error('Error connecting to MongoDB', err);
 });
 
+
 app.post('/signup', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { firstName,lastName, email, phoneNumber,password,role} = req.body;
   try {
     const user = await User.findOne({ email });
     if (user) {
       return res.status(400).send({ message: 'User already exists' });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ name, email, password: hashedPassword });
+    const newUser = new User({ firstName,lastName, email, phoneNumber, password: hashedPassword,role });
     await newUser.save();
     res.send({ message: 'User registered successfully' });
   } catch (error) {
@@ -54,53 +54,17 @@ app.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(400).send({ message: 'Invalid credentials' });
     }
-    res.send({ message: 'Login successful', user: { name: user.name, email: user.email } });
-  } catch (error) {
-    res.status(500).send({ message: 'Server error' });
-  }
-});
-
-
-app.post('/api/google-login', async (req, res) => {
-  const { id_token } = req.body;
-  try {
-    const ticket = await client.verifyIdToken({
-      idToken: id_token,
-      audience: '529640845422-umlott9an2md5d71hd58thetta9e857e.apps.googleusercontent.com'
-    });
-    const payload = ticket.getPayload();
-    const { sub, email, name } = payload;
-    let user = await User.findOne({ email });
-    if (!user) {
-      user = new User({ googleId: sub, email, name });
-      await user.save();
+    // Check user role and redirect accordingly
+    if (user.role === 'seller') {
+      res.send({ message: 'Login successful', user: { firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role }, redirectTo: '/seller' });
+    } else {
+      res.send({ message: 'Login successful', user: { firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role }, redirectTo: '/buyer' });
     }
-    res.send({ message: 'Google login successful' });
   } catch (error) {
     res.status(500).send({ message: 'Server error' });
   }
 });
 
-app.post('/api/google-signup', async (req, res) => {
-  const { id_token } = req.body;
-  try {
-    const ticket = await client.verifyIdToken({
-      idToken: id_token,
-      audience: '529640845422-umlott9an2md5d71hd58thetta9e857e.apps.googleusercontent.com'
-    });
-    const payload = ticket.getPayload();
-    const { sub, email, name } = payload;
-    let user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).send({ message: 'User already exists' });
-    }
-    user = new User({ googleId: sub, email, name });
-    await user.save();
-    res.send({ message: 'Google signup successful' });
-  } catch (error) {
-    res.status(500).send({ message: 'Server error' });
-  }
-});
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');

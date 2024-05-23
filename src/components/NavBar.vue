@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar">
       <div class="navbar-container">
-        <router-link to="/home">Hello, {{ user.name }} !</router-link>
+        <router-link to="/home">Hello, {{ user.firstName }} !</router-link>
         <div class="navbar-left">
           <router-link to="/home">Home</router-link>
           <router-link to="/notes">Notes</router-link>
