@@ -4,11 +4,11 @@
       <h2>Login</h2>
       <input type="email" v-model="email" placeholder="Email" />
       <input type="password" v-model="password" placeholder="Password" />
-      <select v-model="role" class="user-type-select">
+      <!-- <select v-model="role" class="user-type-select">
       <option disabled value="">Select User Type</option>
       <option value="buyer">Buyer</option>
       <option value="seller">Seller</option>
-    </select>
+    </select> -->
       <button class="button" @click="login">Signin</button>
       <div class="middle-or">New user ?</div>
       <button class="button" @click="navigateToSignUp">Create a new account</button>
@@ -24,7 +24,7 @@ export default {
     return {
       email: '',
       password: '',
-      role: 'buyer'
+      // role: 'buyer'
     };
   },
  methods: {
@@ -33,14 +33,14 @@ export default {
         const response = await axios.post('http://localhost:3000/login', {
           email: this.email,
           password: this.password,
-          role: this.role
+          // role: this.role
         });
         alert(response.data.message);
         localStorage.setItem('user', JSON.stringify(response.data.user));
-        if (response.data.user.role === 'seller') {
-          this.$router.push('/home');
+        if (response.data.user.role === 'buyer') {
+          this.$router.push('/buyer');
         } else {
-          this.$router.push('/home');
+          this.$router.push('/seller');
         }
       } catch (error) {
         alert(error.response.data.message);

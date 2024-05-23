@@ -2,14 +2,7 @@
     <nav class="navbar">
       <div class="navbar-container">
         <router-link to="/home">Hello, {{ user.firstName }} !</router-link>
-        <div class="navbar-left">
-          <router-link to="/home">Home</router-link>
-          <router-link to="/notes">Notes</router-link>
-          <router-link to="/todo">My Todo</router-link>
-          <router-link to="/expense-tracker">Expense Tracker</router-link>
-          <router-link to="/timer">Timer</router-link>
-          <router-link to="/file-keeper">File Keeper</router-link>
-        </div>
+        
         <div class="navbar-right">
           <button class="button-logout" @click="logout">Sign out</button>
         </div>
