@@ -4,9 +4,9 @@
       <h2>Login</h2>
       <input type="email" v-model="email" placeholder="Email" />
       <input type="password" v-model="password" placeholder="Password" />
-      <button @click="login">Login</button>
-      <div class="middle-or">Or</div>
-      <button @click="navigateToSignUp">Create a new account</button>
+      <button class="button" @click="login">Signin</button>
+      <div class="middle-or">New user ?</div>
+      <button class="button" @click="navigateToSignUp">Create a new account</button>
     </div>
   </div>
 </template>
@@ -81,7 +81,7 @@ input {
   border-color: #e4f3f2;
 }
 
-button {
+.button {
   padding: 10px;
   width: 100%;
   margin-top: 10px;
@@ -91,14 +91,14 @@ button {
   border-radius: 4px;
 }
 
-button:hover{
+.button:hover{
   background-color: #040009;
   color: white;
   border: none;
   box-shadow: 0 0 10px rgba(93, 92, 92, 0.1);
 }
 
-button:last-of-type {
+.button:last-of-type {
   margin-top: 5px;
 }
 </style>
