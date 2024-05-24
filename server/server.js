@@ -52,7 +52,6 @@ app.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(400).send({ message: 'Invalid credentials' });
     }
-    // Check user role and redirect accordingly
     if (user.role === 'seller') {
       res.send({ message: 'Login successful', user: { _id: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email, role: user.role }, redirectTo: '/seller' });
     } else {
@@ -181,7 +180,6 @@ app.get('/properties', async (req, res) => {
   }
 });
 
-// Endpoint for buyer to view details of a property
 app.get('/properties/:id', async (req, res) => {
   const id = req.params.id;
   try {
@@ -195,70 +193,86 @@ app.get('/properties/:id', async (req, res) => {
   }
 });
 
-// Endpoint for buyer to express interest in a property
 app.post('/properties/:id/interest', async (req, res) => {
   const { id } = req.params;
-  const { buyerId } = req.body;
+  const { userId } = req.body;
 
   try {
+    // Find the user and the property
+    const user = await User.findById(userId);
     const property = await Property.findById(id);
-    if (!property) {
-      return res.status(404).send({ message: 'Property not found' });
+
+    if (!user || !property) {
+      return res.status(404).send({ message: 'User or property not found' });
     }
 
-    // Add the buyer's ID to the list of interested buyers
-    property.interestedBuyers.push(buyerId);
-    await property.save();
+    // Check if the property ID is already in the user's interests
+    const index = user.interests.findIndex(interest => interest.toString() === id);
 
-    res.send({ message: 'Expressed interest in property successfully' });
+    // If the property ID is not in the user's interests, add it
+    if (index === -1) {
+      user.interests.push(property._id);
+      await user.save();
+      res.send({ message: 'Interest in property added' });
+    } else {
+      // If the property ID is already in the user's interests, remove it
+      user.interests.splice(index, 1);
+      await user.save();
+      res.send({ message: 'Interest in property removed' });
+    }
   } catch (error) {
-    console.error('Error expressing interest in property:', error);
+    console.error('Error adding/removing interest:', error);
     res.status(500).send({ message: 'Server error' });
   }
 });
 
-// app.post('/properties/:id/wishlist', async (req, res) => {
-//   const { id } = req.params;
-//   const { userId } = req.body;
 
-//   try {
-//     const user = await User.findById(userId);
-//     if (!user) {
-//       return res.status(404).send({ message: 'User not found' });
-//     }
+app.get('/users/:userId/interests', async (req, res) => {
+  const { userId } = req.params;
 
-//     if (!user.wishlist.includes(id)) {
-//       user.wishlist.push(id);
-//       await user.save();
-//       res.send({ message: 'Property added to wishlist' });
-//     } else {
-//       res.status(400).send({ message: 'Property already in wishlist' });
-//     }
-//   } catch (error) {
-//     console.error('Error adding property to wishlist:', error);
-//     res.status(500).send({ message: 'Server error' });
-//   }
-// });
+  try {
+    const user = await User.findById(userId).populate('interests');
+    if (!user) {
+      return res.status(404).send({ message: 'User not found' });
+    }
 
-// app.post('/properties/:id/like', async (req, res) => {
-//   const { id } = req.params;
-
-//   try {
-//     const property = await Property.findById(id);
-//     if (!property) {
-//       return res.status(404).send({ message: 'Property not found' });
-//     }
-
-//     property.likes += 1;
-//     await property.save();
-//     res.send({ message: 'Property liked' });
-//   } catch (error) {
-//     console.error('Error liking property:', error);
-//     res.status(500).send({ message: 'Server error' });
-//   }
-// });
+    res.send(user.interests);
+  } catch (error) {
+    console.error('Error fetching interests:', error);
+    res.status(500).send({ message: 'Server error' });
+  }
+});
 
 
+app.post('/properties/:id/like', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const property = await Property.findByIdAndUpdate(id, { $inc: { likes: 1 } }, { new: true });
+    if (!property) {
+      return res.status(404).send({ message: 'Property not found' });
+    }
+    res.send({ message: 'Property liked', likes: property.likes });
+  } catch (error) {
+    console.error('Error liking property:', error);
+    res.status(500).send({ message: 'Server error' });
+  }
+});
+
+
+app.get('/users/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const seller = await User.findById(id);
+    if (!seller) {
+      return res.status(404).send({ message: 'Seller not found' });
+    }
+    res.send(seller);
+  } catch (error) {
+    console.error('Error fetching seller details:', error);
+    res.status(500).send({ message: 'Server error' });
+  }
+});
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });

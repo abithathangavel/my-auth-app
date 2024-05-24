@@ -37,7 +37,7 @@ const PropertySchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  // likes: { type: Number, default: 0 }
+  likes: { type: Number, default: 0 }
 });
 
 // Define User schema
@@ -67,8 +67,8 @@ const UserSchema = new mongoose.Schema({
     enum: ['buyer', 'seller'],
     default: 'buyer'
   },
-  properties: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Property' }] 
-  // wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Property' }]
+  properties: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Property' }] ,
+  interests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Property' }] 
 });
 
 const Property = mongoose.model('Property', PropertySchema);

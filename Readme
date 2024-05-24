@@ -1,0 +1,49 @@
+Welcome to the Real Estate Marketplace project! This project is a web application that allows users to browse available properties, express interest in properties they like, view property details, and interact with sellers.
+
+Features
+Browse available properties
+View detailed information about each property
+Express interest in properties
+View seller details
+Like properties
+Technologies Used
+Vue.js: Frontend framework for building the user interface
+Node.js: Backend runtime environment
+Express.js: Backend framework for building the API
+MongoDB: NoSQL database for storing property and user information
+Axios: HTTP client for making requests to the backend API
+bcrypt: Library for hashing passwords
+Font Awesome: Icon library for user interface icons
+Setup Instructions
+Clone the repository:
+
+bash
+Copy code
+git clone <repository-url>
+Install dependencies:
+
+bash
+Copy code
+cd rentify
+npm install
+Start the backend server:
+
+bash
+Copy code
+cd server
+node server.js
+Start the frontend development server:
+
+bash
+Copy code
+cd my-auth-frontend
+npm run serve
+Open your web browser and navigate to http://localhost:8080 to view the application.
+
+Usage
+Browse available properties by clicking on them to view detailed information.
+Express interest in properties by clicking the "Express Interest" button.
+View seller details by clicking the "View Seller Details" button.
+Like properties by clicking the heart icon.
+
+

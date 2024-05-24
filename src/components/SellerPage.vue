@@ -2,7 +2,7 @@
     <div class="home-layout">
       <NavBar />
       <router-view />
-      <div class="container">
+      <div class="container-out">
         <button @click="showPropertyForm = true">Create Property</button>
         
         <div v-if="showPropertyForm" class="form">
@@ -177,7 +177,7 @@ export default {
 </script>
 
 <style>
-.container {
+.container-out {
   padding: 20px;
 }
 

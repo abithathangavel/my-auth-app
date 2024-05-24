@@ -1,4 +1,4 @@
-# my-auth-app
+# rentify
 
 ## Project setup
 ```
