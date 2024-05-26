@@ -14,9 +14,9 @@ app.use(bodyParser.json());
 app.use(cors({
   origin: ['http://localhost:8080', 'http://localhost:8081'] // Update with your actual frontend URL if different
 }));
-
+ 
 // Connect to MongoDB using environment variable
-mongoose.connect(process.env.MONGODB_URI || "mongodb://127.0.0.1/auth_demo", {
+mongoose.connect(process.env.MONGO_URI , {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {
