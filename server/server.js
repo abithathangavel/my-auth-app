@@ -270,7 +270,7 @@ app.get('/users/:id', async (req, res) => {
 
 // Serve the index.html file for any unknown routes (for the frontend)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
+  res.sendFile(path.join(__dirname, '..../dist/index.html'));
 });
 
 app.listen(3000, () => {
