@@ -3,18 +3,20 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
+const path = require('path'); // Import path module
 const { User, Property } = require('./models/User');
 require('dotenv').config();
 
 const app = express();
 app.use(bodyParser.json());
 
-// Allow CORS for http://localhost:8081
+// Allow CORS for specific origins
 app.use(cors({
-  origin: ['http://localhost:8080', 'http://localhost:8081']
+  origin: ['http://localhost:8080', 'http://localhost:8081'] // Update with your actual frontend URL if different
 }));
 
-mongoose.connect("mongodb://127.0.0.1/auth_demo", {
+// Connect to MongoDB using environment variable
+mongoose.connect(process.env.MONGODB_URI || "mongodb://127.0.0.1/auth_demo", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => {
@@ -22,6 +24,9 @@ mongoose.connect("mongodb://127.0.0.1/auth_demo", {
 }).catch(err => {
   console.error('Error connecting to MongoDB', err);
 });
+
+// Serve static files from the Vue.js build directory
+app.use(express.static(path.join(__dirname, '../dist')));
 
 // Signup endpoint
 app.post('/signup', async (req, res) => {
@@ -103,7 +108,6 @@ app.post('/properties', async (req, res) => {
   }
 });
 
-
 // Endpoint to edit a property
 app.put('/properties/:id', async (req, res) => {
   const { id } = req.params;
@@ -132,7 +136,6 @@ app.put('/properties/:id', async (req, res) => {
   }
 });
 
-
 // Endpoint to delete a property
 app.delete('/properties/:id', async (req, res) => {
   const { id } = req.params;
@@ -149,7 +152,6 @@ app.delete('/properties/:id', async (req, res) => {
     res.status(500).send({ message: 'Server error' });
   }
 });
-
 
 // Endpoint to get properties
 app.get('/properties', async (req, res) => {
@@ -170,18 +172,9 @@ app.get('/properties', async (req, res) => {
   }
 });
 
-// Endpoint for buyer to view all properties
-app.get('/properties', async (req, res) => {
-  try {
-    const properties = await Property.find();
-    res.send(properties);
-  } catch (error) {
-    res.status(500).send({ message: 'Server error' });
-  }
-});
-
+// Endpoint to get a single property by ID
 app.get('/properties/:id', async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
   try {
     const property = await Property.findById(id).populate('postedBy', 'firstName lastName email');
     if (!property) {
@@ -193,6 +186,7 @@ app.get('/properties/:id', async (req, res) => {
   }
 });
 
+// Endpoint to add or remove interest in a property
 app.post('/properties/:id/interest', async (req, res) => {
   const { id } = req.params;
   const { userId } = req.body;
@@ -226,7 +220,7 @@ app.post('/properties/:id/interest', async (req, res) => {
   }
 });
 
-
+// Endpoint to get interests of a user
 app.get('/users/:userId/interests', async (req, res) => {
   const { userId } = req.params;
 
@@ -243,7 +237,7 @@ app.get('/users/:userId/interests', async (req, res) => {
   }
 });
 
-
+// Endpoint to like a property
 app.post('/properties/:id/like', async (req, res) => {
   const { id } = req.params;
 
@@ -259,7 +253,7 @@ app.post('/properties/:id/like', async (req, res) => {
   }
 });
 
-
+// Endpoint to get seller details
 app.get('/users/:id', async (req, res) => {
   const { id } = req.params;
   try {
@@ -273,6 +267,12 @@ app.get('/users/:id', async (req, res) => {
     res.status(500).send({ message: 'Server error' });
   }
 });
+
+// Serve the index.html file for any unknown routes (for the frontend)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
+});
+
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
