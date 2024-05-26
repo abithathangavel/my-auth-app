@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 
 module.exports = {
+  outputDir: 'server/dist',
   configureWebpack: {
     plugins: [
       new webpack.DefinePlugin({
